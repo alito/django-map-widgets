@@ -120,7 +120,8 @@ class GooglePointFieldWidget(BasePointFieldMapWidget):
 
         extra_attrs = {
             "options": self.map_options(),
-            "field_value": json.dumps(field_value)
+            "field_value": json.dumps(field_value),
+            "map_widget_decimal" : self.settings.get('decimal', True)
         }
 
         attrs.update(extra_attrs)

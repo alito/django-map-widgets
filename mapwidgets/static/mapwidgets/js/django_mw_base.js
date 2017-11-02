@@ -139,13 +139,42 @@
 		},
 		
 		updateCoordinatesInputs: function(lat, lng){
-			$(".mw-overlay-latitude", this.wrapElemSelector).val(lat || "");
-			$(".mw-overlay-longitude", this.wrapElemSelector).val(lng || "");
+			if (this.degrees_minutes_seconds) {
+				var dms = this.decimalToDegreesMinutesSeconds(lat);
+				$(".mw-overlay-latitude.degrees", this.wrapElemSelector).val(dms['degrees']);
+				$(".mw-overlay-latitude.minutes", this.wrapElemSelector).val(dms['minutes']);
+				$(".mw-overlay-latitude.seconds", this.wrapElemSelector).val(dms['seconds']);
+				dms = this.decimalToDegreesMinutesSeconds(lng);
+				$(".mw-overlay-longitude.degrees", this.wrapElemSelector).val(dms['degrees']);
+				$(".mw-overlay-longitude.minutes", this.wrapElemSelector).val(dms['minutes']);
+				$(".mw-overlay-longitude.seconds", this.wrapElemSelector).val(dms['seconds']);				
+			} else {
+				$(".mw-overlay-latitude", this.wrapElemSelector).val(lat || "");
+				$(".mw-overlay-longitude", this.wrapElemSelector).val(lng || "");
+			}
 		},
 		
 		handleCoordinatesInputsChange: function (e) {
-			var lat = $(".mw-overlay-latitude", this.wrapElemSelector).val();
-			var lng = $(".mw-overlay-longitude", this.wrapElemSelector).val();
+			var lat = "";
+			var lng = "";
+			if (this.degrees_minutes_seconds) {
+				var lat_degrees = $(".mw-overlay-latitude.degrees", this.wrapElemSelector).val();
+				var lat_minutes = $(".mw-overlay-latitude.minutes", this.wrapElemSelector).val();
+				var lat_seconds = $(".mw-overlay-latitude.seconds", this.wrapElemSelector).val();
+				var lng_degrees = $(".mw-overlay-longitude.degrees", this.wrapElemSelector).val();
+				var lng_minutes = $(".mw-overlay-longitude.minutes", this.wrapElemSelector).val();
+				var lng_seconds = $(".mw-overlay-longitude.seconds", this.wrapElemSelector).val();
+
+				if (lat_degrees != "") {
+					lat = this.degreesMinutesSecondsToDecimal(lat_degrees, lat_minutes | 0, lat_seconds);
+				}
+				if (lng_degrees != "") {
+					lng = this.degreesMinutesSecondsToDecimal(lng_degrees, lng_minutes, lng_seconds);
+				}
+			} else {
+				lat = $(".mw-overlay-latitude", this.wrapElemSelector).val();
+				lng = $(".mw-overlay-longitude", this.wrapElemSelector).val();
+			}
 			if (lat && lng){
 				this.updateLocationInput(lat, lng);
 				this.fitBoundMarker();
@@ -203,6 +232,37 @@
 		
 		hideOverlay: function(){
 			this.loaderOverlayElem.addClass("hide")
+		},
+
+		decimalToDegreesMinutesSeconds: function(decimal){
+			var positive = decimal >= 0;
+			var absolute = Math.abs(decimal);
+			var degrees = Math.floor(absolute);
+			var rest = absolute - degrees;
+			var minutes = rest * 60;
+			var minutes_integer = Math.floor(minutes);
+			rest = minutes - minutes_integer;
+			var seconds = rest * 60;
+			if (!positive) degrees = -degrees;
+			return {
+				degrees : degrees,
+				minutes : minutes_integer,
+				seconds : Math.round(seconds * 100) / 100
+			}
+		},
+
+		degreesMinutesSecondsToDecimal: function(degrees, minutes, seconds){
+			var decimal;
+			degrees = degrees | 0;
+			minutes = minutes | 0;
+			seconds = parseFloat(seconds);
+			if (isNaN(seconds)) seconds = 0;
+			if (degrees >= 0) {
+				decimal = degrees + minutes / 60 + seconds / 3600;
+			} else {
+				decimal = degrees - minutes / 60 - seconds / 3600;
+			}
+			return decimal;
 		}
 	});
 	

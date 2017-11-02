@@ -135,11 +135,31 @@
     font-weight: bold;
 }
 
+.mw-coordinates-overlay.dms label {
+    float: none;
+    width: 155px;
+    height: 15px;
+    font-weight: bold;
+    clear: both;
+}
 
 .mw-coordinates-overlay input.form-control{
     margin: 5px 0 10px 0;
     width: 180px;
 }
+
+.mw-coordinates-overlay.dms input.form-control{
+    margin: 5px 0 10px 0;
+    width: 50px;
+    float: left;
+}
+
+.mw-coordinates-overlay.dms input.form-control.seconds{
+    margin: 5px 0 10px 0;
+    width: 70px;
+    clear: right;
+}
+
 
 .mw-coordinates-overlay input.form-control.error{
     border-color: #a94442;

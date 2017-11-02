@@ -6,15 +6,31 @@
             {% block header %}
                 <div class="mw-coordinates-wrap">
                     <a  class="mw-btn mw-btn-primary mw-btn-coordinates">{% trans "Coordinates" %} <i class="icon-down-dir" ></i></a>
-                    <div class="mw-coordinates-overlay hide">
+                    <div class="mw-coordinates-overlay hide{% if not map_widget_decimal %} dms{% endif %}">
+                        {% if map_widget_decimal %}
                         <label for="{{ name }}-mw-overlay-latitude">
                             {% trans "Latitude:" %}
                             <input type="text" id="{{ name }}-mw-overlay-latitude" class="form-control mw-overlay-input mw-overlay-latitude" placeholder="{% trans 'Ex: 41.015137' %}"/>
                         </label>
+                        {% else %}
+                        <label for="{{ name }}-mw-overlay-latitude-degrees">{% trans "Latitude:" %}</label>
+                            <input type="text" id="{{ name }}-mw-overlay-latitude-degrees" class="form-control mw-overlay-input mw-overlay-latitude degrees" placeholder="{% trans 'Degrees' %}"/>
+                            <input type="text" id="{{ name }}-mw-overlay-latitude-minutes" class="form-control mw-overlay-input mw-overlay-latitude minutes" placeholder="{% trans 'Minutes' %}"/>
+                            <input type="text" id="{{ name }}-mw-overlay-latitude-seconds" class="form-control mw-overlay-input mw-overlay-latitude seconds" placeholder="{% trans 'Seconds' %}"/>
+                        {% endif %}
+                        
+                        {% if map_widget_decimal %}
                         <label for="{{ name }}-mw-overlay-longitude">
                             {% trans "Longitude:" %}
                             <input type="text" id="{{ name }}-mw-overlay-longitude" class="form-control mw-overlay-input mw-overlay-longitude" placeholder="{% trans 'Ex: 28.979530' %}"/>
                         </label>
+                        {% else %}
+                        <label for="{{ name }}-mw-overlay-longitude-degrees">{% trans "Longitude:" %}</label>
+                            <input type="text" id="{{ name }}-mw-overlay-longitude-degrees" class="form-control mw-overlay-input mw-overlay-longitude degrees" placeholder="{% trans 'Degrees' %}"/>
+                            <input type="text" id="{{ name }}-mw-overlay-longitude-minutes" class="form-control mw-overlay-input mw-overlay-longitude minutes" placeholder="{% trans 'Minutes' %}"/>
+                            <input type="text" id="{{ name }}-mw-overlay-longitude-seconds" class="form-control mw-overlay-input mw-overlay-longitude seconds" placeholder="{% trans 'Seconds' %}"/>
+
+                        {% endif %}
                         <a class="mw-btn mw-btn-success mw-btn-coordinates-done pull-right">{% trans "Done" %}</a>
                     </div>
                 </div>
@@ -81,7 +97,8 @@
                 markerCreateTriggerNameSpace: "google_point_map_widget:marker_create",
                 markerChangeTriggerNameSpace: "google_point_map_widget:marker_change",
                 markerDeleteTriggerNameSpace: "google_point_map_widget:marker_delete",
-                placeChangedTriggerNameSpace: "google_point_map_widget:place_changed"
+                placeChangedTriggerNameSpace: "google_point_map_widget:place_changed",
+                degrees_minutes_seconds: !mapOptions.decimal,
             };
             var widget = new DjangoGooglePointFieldWidget(mapWidgetOptions);
             {% block extra_javascript %}
